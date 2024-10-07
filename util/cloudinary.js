@@ -2,12 +2,14 @@ const cloudinary = require('cloudinary').v2
 const fs = require("fs")
 
 cloudinary.config({
-  cloud_name: 'dyqemcxnl',
-  api_key: '846598734547581',
-  api_secret: '8W7ANiqTjcJHiXbPiQSzSS-7c8c' // Click 'View API Keys' above to copy your API secret
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRETE // Click 'View API Keys' above to copy your API secret
 });
 
+
 const uploadImage = async (pathName, destination) => {
+
   try {
     const uploadResult = await cloudinary.uploader.upload(pathName, {
       folder: `digitalpoint/${destination}`,
