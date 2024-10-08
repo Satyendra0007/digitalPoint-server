@@ -1,5 +1,7 @@
 const Service = require("../models/service-model")
-const { uploadImage, deleteIMage } = require("../util/cloudinary")
+const { deleteIMage } = require("../util/cloudinary")
+const cloudinary = require('cloudinary').v2; // Import Cloudinary's Node.js SDK
+const streamifier = require('streamifier');
 
 const getServices = async (req, res) => {
   try {
@@ -12,11 +14,24 @@ const getServices = async (req, res) => {
 
 const addService = async (req, res) => {
   try {
-    const imageUrl = await uploadImage(req.file.path, "services")
-    await Service.create({ ...req.body, thumbnail: imageUrl.secure_url, imageId: imageUrl.public_id })
-    return res.status(200).json({ message: "Service Added " })
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: '/digitalpoint/service' },
+      async (err, result) => {
+        if (err) {
+          return res.status(500).json({ error: 'Upload to Cloudinary failed', details: err });
+        }
+        await Service.create({ ...req.body, thumbnail: result.secure_url, imageId: result.public_id })
+        return res.status(200).json({ message: "Service Added " })
+      }
+    );
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
   } catch (error) {
-    return res.status(400).json({ message: "Internal Server Error" })
+    console.log(error)
+    res.status(500).json({ message: "Internal Server Error" })
   }
 }
 

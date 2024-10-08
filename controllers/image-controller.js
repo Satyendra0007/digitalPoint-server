@@ -1,16 +1,13 @@
 const Image = require("../models/image-model")
-const { uploadImage, deleteIMage } = require("../util/cloudinary")
-const cloudinary = require('cloudinary').v2; // Import Cloudinary's Node.js SDK
+const { deleteIMage } = require("../util/cloudinary")
+const cloudinary = require('cloudinary').v2; 
 const streamifier = require('streamifier');
-
-
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRETE // Click 'View API Keys' above to copy your API secret
+  api_secret: process.env.API_SECRETE 
 });
-
 
 const fetchAllImages = async (req, res) => {
   try {
@@ -56,6 +53,5 @@ const deleteImage = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" })
   }
 }
-
 
 module.exports = { fetchAllImages, addImage, deleteImage }

@@ -7,7 +7,6 @@ cloudinary.config({
   api_secret: process.env.API_SECRETE // Click 'View API Keys' above to copy your API secret
 });
 
-
 const uploadImage = async (pathName, destination) => {
 
   try {
